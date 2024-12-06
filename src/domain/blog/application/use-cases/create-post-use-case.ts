@@ -1,5 +1,5 @@
+import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { Post } from '../../enterprise/entities/post'
-import { Slug } from '../../enterprise/entities/value-objects/slug'
 import { PostsRepository } from '../repositories/post-repository'
 
 interface CreatePostUseCaseRequest {
@@ -11,11 +11,10 @@ interface CreatePostUseCaseRequest {
 
 export class CreatePostUseCase {
   constructor(private postRepository: PostsRepository) {}
-
   async execute(props: CreatePostUseCaseRequest) {
     const post = Post.create({
       ...props,
-      slug: Slug.createSlugFromText(props.title),
+      authorId: new UniquieEntityId(props.authorId),
     })
 
     await this.postRepository.create(post)

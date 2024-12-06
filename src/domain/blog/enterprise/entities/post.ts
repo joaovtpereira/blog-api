@@ -6,15 +6,25 @@ import { UniquieEntityId } from '../../../../core/entities/uniquie-entity-id'
 export interface PostProps {
   title: string
   category: string
-  authorId: string
+  authorId: UniquieEntityId
   content: string
   slug: Slug
   created_at: Date
+  likes: number
+  dislikes: number
 }
 
 export class Post extends Entity<PostProps> {
   get title() {
     return this.props.title
+  }
+
+  get likes() {
+    return this.props.likes
+  }
+
+  get dislikes() {
+    return this.props.dislikes
   }
 
   get category() {
@@ -41,14 +51,25 @@ export class Post extends Entity<PostProps> {
     this.props.content = content
   }
 
+  set likes(likes: number) {
+    this.props.likes = likes
+  }
+
+  set dislikes(dislikes: number) {
+    this.props.dislikes = dislikes
+  }
+
   static create(
-    props: Optional<PostProps, 'created_at'>,
+    props: Optional<PostProps, 'created_at' | 'likes' | 'dislikes' | 'slug'>,
     id?: UniquieEntityId,
   ) {
     const post = new Post(
       {
         ...props,
         created_at: new Date(),
+        slug: props.slug ?? Slug.createSlugFromText(props.title),
+        likes: 0,
+        dislikes: 0,
       },
       id,
     )

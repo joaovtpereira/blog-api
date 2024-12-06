@@ -1,24 +1,22 @@
-import { expect, test } from 'vitest'
-
-import { Post } from '../../enterprise/entities/post'
-import { PostsRepository } from '../repositories/post-repository'
 import { CreatePostUseCase } from './create-post-use-case'
+import { InMemoryPostsRepository } from 'test/repositories/in-memory-post-repository'
 
-const fakePostRepository: PostsRepository = {
-  create: async (post: Post): Promise<Post> => {
-    return post
-  },
-}
+let inMemoryPostsRepository: InMemoryPostsRepository
+let sut: CreatePostUseCase
 
-test('create a post', async () => {
-  const answerQuestion = new CreatePostUseCase(fakePostRepository)
-
-  const post = await answerQuestion.execute({
-    title: 'Hello World Test',
-    category: 'Test',
-    authorId: '1',
-    content: 'Test',
+describe('Create Post', () => {
+  beforeEach(() => {
+    inMemoryPostsRepository = new InMemoryPostsRepository()
+    sut = new CreatePostUseCase(inMemoryPostsRepository)
   })
+  it('should be possible create a post', async () => {
+    const post = await sut.execute({
+      authorId: 'author_1',
+      title: 'any_title',
+      category: 'any_category',
+      content: 'any_content',
+    })
 
-  expect(post.slug.value).toBe('hello-world-test')
+    expect(inMemoryPostsRepository.items[0].id).toEqual(post.id)
+  })
 })
