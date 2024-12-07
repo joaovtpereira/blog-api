@@ -38,6 +38,24 @@ describe('UserLike Post', () => {
     )
   })
 
+  it('not be should possible like a post does not exist', async () => {
+    const newPost = makePost(
+      {
+        authorId: new UniquieEntityId('author_1'),
+      },
+      new UniquieEntityId('post-1'),
+    )
+
+    await inMemoryPostsRepository.create(newPost)
+
+    expect(() =>
+      sut.execute({
+        userId: 'author_1',
+        postId: 'invalid_id',
+      }),
+    ).rejects.toBeInstanceOf(Error)
+  })
+
   it('not be should possible like a post twice', async () => {
     const newPost = makePost(
       {
