@@ -1,6 +1,6 @@
 import { UserFeedbackRepository } from '@/domain/blog/application/repositories/user-likes-repository'
 import { UserFeedback } from '@/domain/blog/enterprise/entities/user-feedback'
-export class InMemoryUserLikesRepository implements UserFeedbackRepository {
+export class InMemoryUserFeedbackRepository implements UserFeedbackRepository {
   public items: UserFeedback[] = []
   async create(userLike: UserFeedback) {
     this.items.push(userLike)
@@ -13,6 +13,21 @@ export class InMemoryUserLikesRepository implements UserFeedbackRepository {
         item.postId.toValue() === postId &&
         item.userId.toValue() === userId &&
         item.liked,
+    )
+
+    if (!userlike) {
+      return null
+    }
+
+    return userlike
+  }
+
+  async findHaveDislikedAPost(postId: string, userId: string) {
+    const userlike = this.items.find(
+      (item) =>
+        item.postId.toValue() === postId &&
+        item.userId.toValue() === userId &&
+        !item.liked,
     )
 
     if (!userlike) {

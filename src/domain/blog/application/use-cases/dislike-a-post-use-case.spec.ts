@@ -1,24 +1,24 @@
 import { InMemoryUserFeedbackRepository } from 'test/repositories/in-memory-user-feedback-repository'
-import { LikingPostUseCase } from './liking-a-post-use-case'
 import { InMemoryPostsRepository } from 'test/repositories/in-memory-post-repository'
 import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
+import { DislikePosttUseCase } from './dislike-a-post-use-case'
 
 let inMemoryUserFeedbackRepository: InMemoryUserFeedbackRepository
 let inMemoryPostsRepository: InMemoryPostsRepository
-let sut: LikingPostUseCase
+let sut: DislikePosttUseCase
 
-describe('UserLike Post', () => {
+describe('Dislike a Post Use Case', () => {
   beforeEach(() => {
     inMemoryUserFeedbackRepository = new InMemoryUserFeedbackRepository()
     inMemoryPostsRepository = new InMemoryPostsRepository()
-    sut = new LikingPostUseCase(
+    sut = new DislikePosttUseCase(
       inMemoryUserFeedbackRepository,
       inMemoryPostsRepository,
     )
   })
 
-  it('should be possible like a post', async () => {
+  it('should be possible dislike a post', async () => {
     const newPost = makePost(
       {
         authorId: new UniquieEntityId('author_1'),
@@ -36,9 +36,10 @@ describe('UserLike Post', () => {
     expect(inMemoryUserFeedbackRepository.items[0].id).toBeInstanceOf(
       UniquieEntityId,
     )
+    expect(inMemoryUserFeedbackRepository.items[0].liked).toBe(false)
   })
 
-  it('not be should possible like a post does not exist', async () => {
+  it('not be should possible disliked a post does not exist', async () => {
     const newPost = makePost(
       {
         authorId: new UniquieEntityId('author_1'),
@@ -56,7 +57,7 @@ describe('UserLike Post', () => {
     ).rejects.toBeInstanceOf(Error)
   })
 
-  it('not be should possible like a post twice', async () => {
+  it('not be should possible dislike a post twice', async () => {
     const newPost = makePost(
       {
         authorId: new UniquieEntityId('author_1'),
