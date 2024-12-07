@@ -1,7 +1,7 @@
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
-import { UserFeedback } from '../../enterprise/entities/user-feedback'
-import { PostsRepository } from '../repositories/post-repository'
-import { UserFeedbackRepository } from '../repositories/user-likes-repository'
+import { UserFeedback } from '@/domain/blog/enterprise/entities/user-feedback'
+import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
+import { UserFeedbackRepository } from '@/domain/blog/application/repositories/user-likes-repository'
 
 interface LikingPostUseCaseRequest {
   postId: string

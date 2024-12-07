@@ -1,6 +1,6 @@
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
-import { Post } from '../../enterprise/entities/post'
-import { PostsRepository } from '../repositories/post-repository'
+import { Post } from '@/domain/blog/enterprise/entities/post'
+import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 
 interface CreatePostUseCaseRequest {
   title: string

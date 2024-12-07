@@ -1,4 +1,4 @@
-import { PostsRepository } from '../repositories/post-repository'
+import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 
 interface DeletePostUseCaseRequest {
   authorId: string

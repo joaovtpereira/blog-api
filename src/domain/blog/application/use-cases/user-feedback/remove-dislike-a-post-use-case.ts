@@ -1,5 +1,5 @@
-import { PostsRepository } from '../repositories/post-repository'
-import { UserFeedbackRepository } from '../repositories/user-likes-repository'
+import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
+import { UserFeedbackRepository } from '@/domain/blog/application/repositories/user-likes-repository'
 
 interface RemoveDislikedPosttUseCaseRequest {
   postId: string
