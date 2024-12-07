@@ -1,14 +1,14 @@
 import { PostsRepository } from '../repositories/post-repository'
 import { UserFeedbackRepository } from '../repositories/user-likes-repository'
 
-interface RemoveLikePosttUseCaseRequest {
+interface RemoveDislikedPosttUseCaseRequest {
   postId: string
   userId: string
 }
 
-interface RemoveLikePosttUseCaseResponse {}
+interface RemoveDislikedPosttUseCaseResponse {}
 
-export class RemoveLikePosttUseCase {
+export class RemoveDislikedPosttUseCase {
   constructor(
     private userFeedbackRepository: UserFeedbackRepository,
     private postRepository: PostsRepository,
@@ -17,23 +17,23 @@ export class RemoveLikePosttUseCase {
   async execute({
     postId,
     userId,
-  }: RemoveLikePosttUseCaseRequest): Promise<RemoveLikePosttUseCaseResponse> {
+  }: RemoveDislikedPosttUseCaseRequest): Promise<RemoveDislikedPosttUseCaseResponse> {
     const post = await this.postRepository.findById(postId)
 
     if (!post) {
       throw new Error('Post not found')
     }
 
-    const userLike = await this.userFeedbackRepository.findHaveLikeByPost(
+    const userDislike = await this.userFeedbackRepository.findHaveDislikedAPost(
       postId,
       userId,
     )
 
-    if (!userLike) {
-      throw new Error('You doent like this post')
+    if (!userDislike) {
+      throw new Error('You doent dislike this post')
     }
 
-    await this.userFeedbackRepository.delete(userLike)
+    await this.userFeedbackRepository.delete(userDislike)
 
     return {}
   }

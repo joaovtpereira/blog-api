@@ -12,7 +12,7 @@ interface DislikePosttUseCaseResponse {}
 
 export class DislikePosttUseCase {
   constructor(
-    private userLikeRepository: UserFeedbackRepository,
+    private userFeedbackRepository: UserFeedbackRepository,
     private postRepository: PostsRepository,
   ) {}
 
@@ -26,10 +26,8 @@ export class DislikePosttUseCase {
       throw new Error('Post not found')
     }
 
-    const existsDisliked = await this.userLikeRepository.findHaveDislikedAPost(
-      postId,
-      userId,
-    )
+    const existsDisliked =
+      await this.userFeedbackRepository.findHaveDislikedAPost(postId, userId)
 
     if (existsDisliked) {
       throw new Error('You already disliked this post')
@@ -41,7 +39,7 @@ export class DislikePosttUseCase {
       liked: false,
     })
 
-    await this.userLikeRepository.create(like)
+    await this.userFeedbackRepository.create(like)
 
     return {}
   }

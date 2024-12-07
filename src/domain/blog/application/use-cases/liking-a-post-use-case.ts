@@ -12,7 +12,7 @@ interface LikingPostUseCaseResponse {}
 
 export class LikingPostUseCase {
   constructor(
-    private userLikeRepository: UserFeedbackRepository,
+    private userFeedbackRepository: UserFeedbackRepository,
     private postRepository: PostsRepository,
   ) {}
 
@@ -26,7 +26,7 @@ export class LikingPostUseCase {
       throw new Error('Post not found')
     }
 
-    const existsLike = await this.userLikeRepository.findHaveLikeByPost(
+    const existsLike = await this.userFeedbackRepository.findHaveLikeByPost(
       postId,
       userId,
     )
@@ -41,7 +41,7 @@ export class LikingPostUseCase {
       liked: true,
     })
 
-    await this.userLikeRepository.create(like)
+    await this.userFeedbackRepository.create(like)
 
     return {}
   }

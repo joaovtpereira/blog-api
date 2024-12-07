@@ -58,11 +58,12 @@ describe('RemoveLike Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(() =>
-      sut.execute({
-        userId: 'author_1',
-        postId: 'invalid_id',
-      }),
+    expect(
+      async () =>
+        await sut.execute({
+          userId: 'author_1',
+          postId: 'invalid_id',
+        }),
     ).rejects.toBeInstanceOf(Error)
   })
 
@@ -76,11 +77,12 @@ describe('RemoveLike Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(() =>
-      sut.execute({
-        userId: 'author_1',
-        postId: newPost.id.toValue(),
-      }),
+    expect(
+      async () =>
+        await sut.execute({
+          userId: 'author_1',
+          postId: newPost.id.toValue(),
+        }),
     ).rejects.toBeInstanceOf(Error)
   })
 })

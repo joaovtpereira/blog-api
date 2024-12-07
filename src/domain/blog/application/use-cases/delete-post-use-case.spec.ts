@@ -40,11 +40,12 @@ describe('Delete Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(() =>
-      sut.execute({
-        authorId: 'author_2',
-        postId: 'post-1',
-      }),
+    expect(
+      async () =>
+        await sut.execute({
+          authorId: 'author_2',
+          postId: 'post-1',
+        }),
     ).rejects.toBeInstanceOf(Error)
   })
 
@@ -58,11 +59,12 @@ describe('Delete Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(() =>
-      sut.execute({
-        authorId: 'author_1',
-        postId: 'post-2',
-      }),
+    expect(
+      async () =>
+        await sut.execute({
+          authorId: 'author_1',
+          postId: 'post-2',
+        }),
     ).rejects.toBeInstanceOf(Error)
   })
 })
