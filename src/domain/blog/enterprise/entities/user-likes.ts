@@ -9,6 +9,14 @@ interface UserLikesProps {
 }
 
 export class UserLikes extends Entity<UserLikesProps> {
+  get userId() {
+    return this.props.userId
+  }
+
+  get postId() {
+    return this.props.postId
+  }
+
   static create(
     props: Optional<UserLikesProps, 'created_at'>,
     id?: UniquieEntityId,
