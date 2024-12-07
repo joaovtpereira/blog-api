@@ -1,7 +1,7 @@
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
-import { UserLikes } from '../../enterprise/entities/user-likes'
+import { UserFeedback } from '../../enterprise/entities/user-feedback'
 import { PostsRepository } from '../repositories/post-repository'
-import { UserLikesRepository } from '../repositories/user-likes-repository'
+import { UserFeedbackRepository } from '../repositories/user-likes-repository'
 
 interface LikingPostUseCaseRequest {
   postId: string
@@ -12,7 +12,7 @@ interface LikingPostUseCaseResponse {}
 
 export class LikingPostUseCase {
   constructor(
-    private userLikeRepository: UserLikesRepository,
+    private userLikeRepository: UserFeedbackRepository,
     private postRepository: PostsRepository,
   ) {}
 
@@ -35,9 +35,10 @@ export class LikingPostUseCase {
       throw new Error('You already liked this post')
     }
 
-    const like = UserLikes.create({
+    const like = UserFeedback.create({
       userId: new UniquieEntityId(userId),
       postId: new UniquieEntityId(postId),
+      liked: true,
     })
 
     await this.userLikeRepository.create(like)

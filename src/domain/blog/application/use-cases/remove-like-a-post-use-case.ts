@@ -1,5 +1,5 @@
 import { PostsRepository } from '../repositories/post-repository'
-import { UserLikesRepository } from '../repositories/user-likes-repository'
+import { UserFeedbackRepository } from '../repositories/user-likes-repository'
 
 interface RemoveLikePosttUseCaseRequest {
   postId: string
@@ -10,7 +10,7 @@ interface RemoveLikePosttUseCaseResponse {}
 
 export class RemoveLikePosttUseCase {
   constructor(
-    private userLikeRepository: UserLikesRepository,
+    private userLikeRepository: UserFeedbackRepository,
     private postRepository: PostsRepository,
   ) {}
 

@@ -1,7 +1,10 @@
-import { UserLikes } from '@/domain/blog/enterprise/entities/user-likes'
+import { UserFeedback } from '@/domain/blog/enterprise/entities/user-feedback'
 
-export interface UserLikesRepository {
-  create(userlikes: UserLikes): Promise<UserLikes>
-  findHaveLikeByPost(postId: string, userId: string): Promise<UserLikes | null>
-  delete(userLike: UserLikes): Promise<void>
+export interface UserFeedbackRepository {
+  create(userfeedback: UserFeedback): Promise<UserFeedback>
+  findHaveLikeByPost(
+    postId: string,
+    userId: string,
+  ): Promise<UserFeedback | null>
+  delete(userLike: UserFeedback): Promise<void>
 }
