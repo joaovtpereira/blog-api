@@ -4,14 +4,14 @@ import { UniquieEntityId } from '../../../../core/entities/uniquie-entity-id'
 
 interface CommentProps {
   content: string
-  post_id: string
+  postId: string
   authorId: string
   created_at: Date
 }
 
 export class Comment extends Entity<CommentProps> {
-  get post_id() {
-    return this.props.post_id
+  get postId() {
+    return this.props.postId
   }
 
   get authorId() {
