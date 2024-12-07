@@ -19,4 +19,10 @@ export class InMemoryUserLikesRepository implements UserLikesRepository {
 
     return userlike
   }
+
+  async delete(userLike: UserLikes) {
+    const likeIndex = this.items.findIndex((item) => item?.id === userLike.id)
+
+    this.items.splice(likeIndex, 1)
+  }
 }
