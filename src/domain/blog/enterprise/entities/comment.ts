@@ -2,10 +2,10 @@ import { Entity } from '../../../../core/entities/entity'
 import { Optional } from '../../../../core/types/optional'
 import { UniquieEntityId } from '../../../../core/entities/uniquie-entity-id'
 
-interface CommentProps {
+export interface CommentProps {
   content: string
-  postId: string
-  authorId: string
+  postId: UniquieEntityId
+  authorId: UniquieEntityId
   created_at: Date
 }
 

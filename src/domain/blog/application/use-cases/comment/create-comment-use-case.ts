@@ -1,6 +1,7 @@
 import { Comment } from '@/domain/blog/enterprise/entities/comment'
 import { CommentRepository } from '@/domain/blog/application/repositories/comment-repository'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
+import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 
 interface CreateCommentUseCaseRequest {
   content: string
@@ -23,8 +24,8 @@ export class CreateCommentUseCase {
 
     const comment = Comment.create({
       content,
-      postId,
-      authorId,
+      postId: new UniquieEntityId(postId),
+      authorId: new UniquieEntityId(authorId),
     })
 
     await this.commentRepository.create(comment)
