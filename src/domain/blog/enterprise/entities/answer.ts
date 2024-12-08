@@ -4,9 +4,8 @@ import { Entity } from '../../../../core/entities/entity'
 
 interface AnswerProps {
   content: string
-  post_id: string
-  authorId: string
-  comment_id: string
+  authorId: UniquieEntityId
+  commentId: UniquieEntityId
   created_at: Date
 }
 
@@ -15,16 +14,12 @@ export class Answer extends Entity<AnswerProps> {
     return this.props.content
   }
 
-  get post_id() {
-    return this.props.post_id
-  }
-
   get authorId() {
     return this.props.authorId
   }
 
-  get comment_id() {
-    return this.props.comment_id
+  get commentId() {
+    return this.props.commentId
   }
 
   get created_at() {
