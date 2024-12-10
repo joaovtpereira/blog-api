@@ -2,6 +2,8 @@ import { Answer } from '@/domain/blog/enterprise/entities/answer'
 import { AnswerRepository } from '@/domain/blog/application/repositories/answer-repository'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { CommentRepository } from '../../repositories/comment-repository'
+import { Either, left, right } from '@/core/either'
+import { NotFoundError } from '../errors/not-found-error'
 
 interface CreateAnswerUseCaseRequest {
   content: string
@@ -9,17 +11,28 @@ interface CreateAnswerUseCaseRequest {
   commentId: string
 }
 
+type CreateAnswerUseCaseResponse = Either<
+  NotFoundError,
+  {
+    answer: Answer
+  }
+>
+
 export class CreateAnswerUseCase {
   constructor(
     private answerRepository: AnswerRepository,
     private commentRepository: CommentRepository,
   ) {}
 
-  async execute({ content, authorId, commentId }: CreateAnswerUseCaseRequest) {
+  async execute({
+    content,
+    authorId,
+    commentId,
+  }: CreateAnswerUseCaseRequest): Promise<CreateAnswerUseCaseResponse> {
     const comment = await this.commentRepository.findById(commentId)
 
     if (!comment) {
-      throw new Error('Comment not found')
+      return left(new NotFoundError())
     }
 
     const answer = Answer.create({
@@ -30,6 +43,6 @@ export class CreateAnswerUseCase {
 
     await this.answerRepository.create(answer)
 
-    return answer
+    return right({ answer })
   }
 }

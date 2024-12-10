@@ -6,6 +6,8 @@ import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { InMemoryCommentRepository } from 'test/repositories/in-memory-comment-repository'
 import { makeComment } from 'test/factories/make-comment'
 import { makeAnswer } from 'test/factories/makeAnswer'
+import { NotFoundError } from '../errors/not-found-error'
+import { NotAllowedError } from '../errors/not-allowed-error'
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let inMemoryPostsRepository: InMemoryPostsRepository
@@ -35,12 +37,13 @@ describe('Edit Answer', () => {
 
     await inMemoryAnswerRepository.create(newAnswer)
 
-    await sut.execute({
+    const result = await sut.execute({
       authorId: 'author-1',
       content: 'any String',
       answerId: newAnswer.id.toValue(),
     })
 
+    expect(result.isRight()).toBe(true)
     expect(inMemoryAnswerRepository.items[0].id).toEqual(newAnswer.id)
     expect(inMemoryAnswerRepository.items[0].content).toBe('any String')
   })
@@ -59,13 +62,14 @@ describe('Edit Answer', () => {
 
     await inMemoryAnswerRepository.create(newAnswer)
 
-    expect(async () => {
-      await sut.execute({
-        authorId: 'author-1',
-        content: 'any String',
-        answerId: 'answer-2',
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author-1',
+      content: 'any String',
+      answerId: 'answer-2',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 
   it('not be should possible edit a answer from another user', async () => {
@@ -79,12 +83,13 @@ describe('Edit Answer', () => {
 
     await inMemoryAnswerRepository.create(newAnswer)
 
-    expect(async () => {
-      await sut.execute({
-        authorId: 'author-2',
-        content: 'any String',
-        answerId: newAnswer.id.toValue(),
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author-2',
+      content: 'any String',
+      answerId: newAnswer.id.toValue(),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

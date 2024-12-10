@@ -5,6 +5,7 @@ import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { InMemoryCommentRepository } from 'test/repositories/in-memory-comment-repository'
 import { makeComment } from 'test/factories/make-comment'
+import { NotFoundError } from '../errors/not-found-error'
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let inMemoryPostsRepository: InMemoryPostsRepository
@@ -31,13 +32,16 @@ describe('Answer Answer', () => {
 
     await inMemoryCommentRepository.create(newComment)
 
-    const comment = await sut.execute({
+    const result = await sut.execute({
       authorId: 'author-1',
       content: 'any String',
       commentId: newComment.id.toValue(),
     })
 
-    expect(inMemoryAnswerRepository.items[0].id).toEqual(comment.id)
+    assert(result.isRight(), 'Result not success')
+    expect(inMemoryAnswerRepository.items[0].id).toEqual(
+      result.value.answer?.id,
+    )
     expect(inMemoryAnswerRepository.items[0].content).toBe('any String')
   })
 
@@ -50,12 +54,13 @@ describe('Answer Answer', () => {
 
     await inMemoryCommentRepository.create(newComment)
 
-    expect(async () => {
-      await sut.execute({
-        authorId: 'author-1',
-        content: 'any String',
-        commentId: 'comment-2',
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author-1',
+      content: 'any String',
+      commentId: 'comment-2',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 })

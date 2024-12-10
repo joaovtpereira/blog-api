@@ -12,7 +12,7 @@ describe('Delete User', () => {
     sut = new DeleteUserUseCase(inMemoryUserRepository)
   })
 
-  it.skip('should be possible delete a user', async () => {
+  it('should be possible delete a user', async () => {
     const newUser = makeUser()
 
     await inMemoryUserRepository.create(newUser)
