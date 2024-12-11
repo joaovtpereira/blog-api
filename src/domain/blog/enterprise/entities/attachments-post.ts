@@ -1,9 +1,9 @@
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { Entity } from '@/core/entities/entity'
 
-interface AttachmentPostProps {
-  postId: string
-  attachmentId: string
+export interface AttachmentPostProps {
+  postId: UniquieEntityId
+  attachmentId: UniquieEntityId
 }
 
 export class AttachmentPost extends Entity<AttachmentPostProps> {

@@ -4,13 +4,18 @@ import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { NotAllowedError } from '../errors/not-allowed-error'
 import { NotFoundError } from '../errors/not-found-error'
+import { InMemoryAttachmentPostRepository } from 'test/repositories/in-memory-attachment-post-repository'
 
 let inMemoryPostsRepository: InMemoryPostsRepository
+let inMemoryAttachmentPostRepository: InMemoryAttachmentPostRepository
 let sut: EditPostUseCase
 
 describe('Edit Post', () => {
   beforeEach(() => {
-    inMemoryPostsRepository = new InMemoryPostsRepository()
+    inMemoryAttachmentPostRepository = new InMemoryAttachmentPostRepository()
+    inMemoryPostsRepository = new InMemoryPostsRepository(
+      inMemoryAttachmentPostRepository,
+    )
     sut = new EditPostUseCase(inMemoryPostsRepository)
   })
 

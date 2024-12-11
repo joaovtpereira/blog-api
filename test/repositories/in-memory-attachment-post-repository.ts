@@ -6,10 +6,10 @@ export class InMemoryAttachmentPostRepository
   public items: AttachmentPost[] = []
 
   async findManyByPostId(postId: string) {
-    return this.items.filter((item) => item.postId === postId)
+    return this.items.filter((item) => item.postId.toValue() === postId)
   }
 
   async deleteManyByPostId(postId: string) {
-    this.items = this.items.filter((item) => item.postId !== postId)
+    this.items = this.items.filter((item) => item.postId.toValue() !== postId)
   }
 }
