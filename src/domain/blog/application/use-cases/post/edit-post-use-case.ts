@@ -1,13 +1,18 @@
 import { Either, left, right } from '@/core/either'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 import { Post } from '@/domain/blog/enterprise/entities/post'
-import { NotFoundError } from '../errors/not-found-error'
-import { NotAllowedError } from '../errors/not-allowed-error'
+import { NotFoundError } from '@/domain/blog/application/use-cases/errors/not-found-error'
+import { NotAllowedError } from '@/domain/blog/application/use-cases/errors/not-allowed-error'
+import { PostAttachmentsRepository } from '@/domain/blog/application/repositories/post-attachments-repository'
+import { AttachmentsPostList } from '@/domain/blog/enterprise/entities/attachments-post-list'
+import { AttachmentPost } from '@/domain/blog/enterprise/entities/attachments-post'
+import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 
 interface EditPostUseCaseRequest {
   postId: string
   content: string
   authorId: string
+  attachmentsId: string[]
 }
 
 type EditPostUseCaseResponse = Either<
@@ -18,7 +23,10 @@ type EditPostUseCaseResponse = Either<
 >
 
 export class EditPostUseCase {
-  constructor(private postRepository: PostsRepository) {}
+  constructor(
+    private postRepository: PostsRepository,
+    private attachmentsPostRepository: PostAttachmentsRepository,
+  ) {}
 
   async execute(
     props: EditPostUseCaseRequest,
@@ -33,6 +41,21 @@ export class EditPostUseCase {
       return left(new NotAllowedError())
     }
 
+    const currentAttachmentsPost =
+      await this.attachmentsPostRepository.findManyByPostId(props.postId)
+
+    const postAttachmentsList = new AttachmentsPostList(currentAttachmentsPost)
+
+    const postAttachments = props.attachmentsId.map((attachmentId) => {
+      return AttachmentPost.create({
+        attachmentId: new UniquieEntityId(attachmentId),
+        postId: post.id,
+      })
+    })
+
+    postAttachmentsList.update(postAttachments)
+
+    post.attachments = postAttachmentsList
     post.content = props.content
 
     await this.postRepository.save(post)
