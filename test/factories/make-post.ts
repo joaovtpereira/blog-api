@@ -12,6 +12,7 @@ export function makePost(
       title: faker.lorem.sentence(),
       content: faker.lorem.text(),
       category: faker.lorem.word(),
+      attachments: [],
       ...override,
     },
     id,

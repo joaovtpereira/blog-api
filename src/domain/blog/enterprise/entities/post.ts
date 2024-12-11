@@ -69,7 +69,10 @@ export class Post extends AgregateRoot<PostProps> {
   }
 
   static create(
-    props: Optional<PostProps, 'created_at' | 'likes' | 'dislikes' | 'slug'>,
+    props: Optional<
+      PostProps,
+      'created_at' | 'likes' | 'dislikes' | 'slug' | 'attachments'
+    >,
     id?: UniquieEntityId,
   ) {
     const post = new Post(
@@ -79,6 +82,7 @@ export class Post extends AgregateRoot<PostProps> {
         slug: props.slug ?? Slug.createSlugFromText(props.title),
         likes: 0,
         dislikes: 0,
+        attachments: props.attachments ?? [],
       },
       id,
     )
