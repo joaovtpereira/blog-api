@@ -1,26 +1,31 @@
 import { Slug } from './value-objects/slug'
-import { Entity } from '../../../../core/entities/entity'
 import { Optional } from '../../../../core/types/optional'
 import { UniquieEntityId } from '../../../../core/entities/uniquie-entity-id'
+import { AgregateRoot } from '@/core/entities/aggregate-root'
 
 export interface PostProps {
   title: string
   category: string
   authorId: UniquieEntityId
   content: string
+  attachments: string[]
   slug: Slug
   created_at: Date
   likes: number
   dislikes: number
 }
 
-export class Post extends Entity<PostProps> {
+export class Post extends AgregateRoot<PostProps> {
   get title() {
     return this.props.title
   }
 
   get likes() {
     return this.props.likes
+  }
+
+  get attachments() {
+    return this.props.attachments
   }
 
   get dislikes() {
@@ -57,6 +62,10 @@ export class Post extends Entity<PostProps> {
 
   set dislikes(dislikes: number) {
     this.props.dislikes = dislikes
+  }
+
+  set attachments(attachments: string[]) {
+    this.props.attachments = attachments
   }
 
   static create(
