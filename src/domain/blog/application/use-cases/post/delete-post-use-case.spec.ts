@@ -2,6 +2,8 @@ import { DeletePostUseCase } from './delete-post-use-case'
 import { InMemoryPostsRepository } from 'test/repositories/in-memory-post-repository'
 import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
+import { NotAllowedError } from '../errors/not-allowed-error'
+import { NotFoundError } from '../errors/not-found-error'
 
 let inMemoryPostsRepository: InMemoryPostsRepository
 let sut: DeletePostUseCase
@@ -22,11 +24,12 @@ describe('Delete Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    await sut.execute({
+    const result = await sut.execute({
       authorId: 'author_1',
       postId: 'post-1',
     })
 
+    expect(result.isRight()).toBe(true)
     expect(inMemoryPostsRepository.items).toHaveLength(0)
   })
 
@@ -40,13 +43,13 @@ describe('Delete Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(
-      async () =>
-        await sut.execute({
-          authorId: 'author_2',
-          postId: 'post-1',
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author_2',
+      postId: 'post-1',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 
   it('not should be possible delete a post doenst exist', async () => {
@@ -59,12 +62,12 @@ describe('Delete Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(
-      async () =>
-        await sut.execute({
-          authorId: 'author_1',
-          postId: 'post-2',
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author_1',
+      postId: 'post-2',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 })

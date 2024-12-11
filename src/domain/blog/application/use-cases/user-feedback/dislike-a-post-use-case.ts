@@ -2,13 +2,19 @@ import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { UserFeedback } from '@/domain/blog/enterprise/entities/user-feedback'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 import { UserFeedbackRepository } from '@/domain/blog/application/repositories/user-likes-repository'
+import { Either, left, right } from '@/core/either'
+import { NotFoundError } from '../errors/not-found-error'
+import { AlreadyDislikePostError } from '../errors/already-dislike-post-error'
 
 interface DislikePosttUseCaseRequest {
   postId: string
   userId: string
 }
 
-interface DislikePosttUseCaseResponse {}
+type DislikePosttUseCaseResponse = Either<
+  NotFoundError | AlreadyDislikePostError,
+  NonNullable<unknown>
+>
 
 export class DislikePosttUseCase {
   constructor(
@@ -23,14 +29,14 @@ export class DislikePosttUseCase {
     const post = await this.postRepository.findById(postId)
 
     if (!post) {
-      throw new Error('Post not found')
+      return left(new NotFoundError())
     }
 
     const existsDisliked =
       await this.userFeedbackRepository.findHaveDislikedAPost(postId, userId)
 
     if (existsDisliked) {
-      throw new Error('You already disliked this post')
+      return left(new AlreadyDislikePostError())
     }
 
     const like = UserFeedback.create({
@@ -41,6 +47,6 @@ export class DislikePosttUseCase {
 
     await this.userFeedbackRepository.create(like)
 
-    return {}
+    return right({})
   }
 }

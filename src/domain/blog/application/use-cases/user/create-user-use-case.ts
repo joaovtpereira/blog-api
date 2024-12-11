@@ -1,5 +1,7 @@
 import { User } from '@/domain/blog/enterprise/entities/user'
 import { UserRepository } from '@/domain/blog/application/repositories/user-repository'
+import { Either, left, right } from '@/core/either'
+import { UserWithSameEmail } from '../errors/user-with-same-email-error'
 
 interface CreateUserUseCaseRequest {
   name: string
@@ -7,14 +9,23 @@ interface CreateUserUseCaseRequest {
   password: string
 }
 
+type CreateUserUseCaseResponse = Either<
+  UserWithSameEmail,
+  {
+    user: User
+  }
+>
+
 export class CreateUserUseCase {
   constructor(private userRepository: UserRepository) {}
-  async execute(props: CreateUserUseCaseRequest) {
+  async execute(
+    props: CreateUserUseCaseRequest,
+  ): Promise<CreateUserUseCaseResponse> {
     const userAlreadyExistsWithSameEmail =
       await this.userRepository.findByEmail(props.email)
 
     if (userAlreadyExistsWithSameEmail) {
-      throw new Error('User already exists with same email')
+      return left(new UserWithSameEmail())
     }
 
     const user = User.create({
@@ -23,6 +34,6 @@ export class CreateUserUseCase {
 
     await this.userRepository.create(user)
 
-    return user
+    return right({ user })
   }
 }

@@ -10,13 +10,14 @@ describe('Create Post', () => {
     sut = new CreatePostUseCase(inMemoryPostsRepository)
   })
   it('should be possible create a post', async () => {
-    const post = await sut.execute({
+    const result = await sut.execute({
       authorId: 'author_1',
       title: 'any_title',
       category: 'any_category',
       content: 'any_content',
     })
 
-    expect(inMemoryPostsRepository.items[0].id).toEqual(post.id)
+    assert(result.isRight(), 'Result not success')
+    expect(inMemoryPostsRepository.items[0].id).toEqual(result.value.post.id)
   })
 })

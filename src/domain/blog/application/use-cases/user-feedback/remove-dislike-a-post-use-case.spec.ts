@@ -4,6 +4,8 @@ import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { RemoveDislikedPosttUseCase } from './remove-dislike-a-post-use-case'
 import { DislikePosttUseCase } from './dislike-a-post-use-case'
+import { NotFoundError } from '../errors/not-found-error'
+import { NotDislikedPostError } from '../errors/not-disliked-post-error'
 
 let inMemoryUserFeedbackRepository: InMemoryUserFeedbackRepository
 let inMemoryPostsRepository: InMemoryPostsRepository
@@ -42,11 +44,12 @@ describe('Remove Dislike Post use Case', () => {
 
     expect(inMemoryUserFeedbackRepository.items[0].liked).toBe(false)
 
-    await sut.execute({
+    const result = await sut.execute({
       userId: 'author_1',
       postId: newPost.id.toValue(),
     })
 
+    expect(result.isRight()).toBe(true)
     expect(inMemoryUserFeedbackRepository.items).toHaveLength(0)
   })
 
@@ -60,13 +63,12 @@ describe('Remove Dislike Post use Case', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(
-      async () =>
-        await sut.execute({
-          userId: 'author_1',
-          postId: 'invalid_id',
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'author_1',
+      postId: 'invalid_id',
+    })
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 
   it('not be should possible dislike a post when user doesnt have like', async () => {
@@ -79,12 +81,12 @@ describe('Remove Dislike Post use Case', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(
-      async () =>
-        await sut.execute({
-          userId: 'author_1',
-          postId: newPost.id.toValue(),
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'author_1',
+      postId: newPost.id.toValue(),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotDislikedPostError)
   })
 })

@@ -2,13 +2,19 @@ import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { UserFeedback } from '@/domain/blog/enterprise/entities/user-feedback'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 import { UserFeedbackRepository } from '@/domain/blog/application/repositories/user-likes-repository'
+import { Either, left, right } from '@/core/either'
+import { NotFoundError } from '../errors/not-found-error'
+import { AlreadyLikePostError } from '../errors/already-like-post-error'
 
 interface LikingPostUseCaseRequest {
   postId: string
   userId: string
 }
 
-interface LikingPostUseCaseResponse {}
+type LikingPostUseCaseResponse = Either<
+  NotFoundError | AlreadyLikePostError,
+  NonNullable<unknown>
+>
 
 export class LikingPostUseCase {
   constructor(
@@ -23,7 +29,7 @@ export class LikingPostUseCase {
     const post = await this.postRepository.findById(postId)
 
     if (!post) {
-      throw new Error('Post not found')
+      return left(new NotFoundError())
     }
 
     const existsLike = await this.userFeedbackRepository.findHaveLikeByPost(
@@ -32,7 +38,7 @@ export class LikingPostUseCase {
     )
 
     if (existsLike) {
-      throw new Error('You already liked this post')
+      return left(new AlreadyLikePostError())
     }
 
     const like = UserFeedback.create({
@@ -43,6 +49,6 @@ export class LikingPostUseCase {
 
     await this.userFeedbackRepository.create(like)
 
-    return {}
+    return right({})
   }
 }

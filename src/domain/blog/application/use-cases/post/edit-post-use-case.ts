@@ -1,5 +1,8 @@
+import { Either, left, right } from '@/core/either'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 import { Post } from '@/domain/blog/enterprise/entities/post'
+import { NotFoundError } from '../errors/not-found-error'
+import { NotAllowedError } from '../errors/not-allowed-error'
 
 interface EditPostUseCaseRequest {
   postId: string
@@ -7,9 +10,12 @@ interface EditPostUseCaseRequest {
   authorId: string
 }
 
-interface EditPostUseCaseResponse {
-  post: Post
-}
+type EditPostUseCaseResponse = Either<
+  NotFoundError | NotAllowedError,
+  {
+    post: Post
+  }
+>
 
 export class EditPostUseCase {
   constructor(private postRepository: PostsRepository) {}
@@ -20,17 +26,17 @@ export class EditPostUseCase {
     const post = await this.postRepository.findById(props.postId)
 
     if (!post) {
-      throw new Error('Post not found')
+      return left(new NotFoundError())
     }
 
     if (post.authorId.toValue() !== props.authorId) {
-      throw new Error('You are not the author of this post')
+      return left(new NotAllowedError())
     }
 
     post.content = props.content
 
     await this.postRepository.save(post)
 
-    return { post }
+    return right({ post })
   }
 }

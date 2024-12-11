@@ -1,4 +1,8 @@
+import { Either, left, right } from '@/core/either'
 import { CommentRepository } from '@/domain/blog/application/repositories/comment-repository'
+import { NotFoundError } from '../errors/not-found-error'
+import { NotAllowedError } from '../errors/not-allowed-error'
+import { Comment } from '@/domain/blog/enterprise/entities/comment'
 
 interface EditCommentUseCaseRequest {
   content: string
@@ -6,24 +10,35 @@ interface EditCommentUseCaseRequest {
   authorId: string
 }
 
+type EditCommentUseCaseResponse = Either<
+  NotFoundError | NotAllowedError,
+  {
+    comment: Comment
+  }
+>
+
 export class EditCommentUseCase {
   constructor(private commentRepository: CommentRepository) {}
 
-  async execute({ commentId, content, authorId }: EditCommentUseCaseRequest) {
+  async execute({
+    commentId,
+    content,
+    authorId,
+  }: EditCommentUseCaseRequest): Promise<EditCommentUseCaseResponse> {
     const comment = await this.commentRepository.findById(commentId)
 
     if (!comment) {
-      throw new Error('Comment not found')
+      return left(new NotFoundError())
     }
 
     if (comment.authorId.toValue() !== authorId) {
-      throw new Error('You are not the author of this comment')
+      return left(new NotAllowedError())
     }
 
     comment.content = content
 
     await this.commentRepository.save(comment)
 
-    return comment
+    return right({ comment })
   }
 }

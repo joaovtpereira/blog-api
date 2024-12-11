@@ -2,6 +2,8 @@ import { EditPostUseCase } from './edit-post-use-case'
 import { InMemoryPostsRepository } from 'test/repositories/in-memory-post-repository'
 import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
+import { NotAllowedError } from '../errors/not-allowed-error'
+import { NotFoundError } from '../errors/not-found-error'
 
 let inMemoryPostsRepository: InMemoryPostsRepository
 let sut: EditPostUseCase
@@ -19,12 +21,13 @@ describe('Edit Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    await sut.execute({
+    const result = await sut.execute({
       authorId: 'author_1',
       postId: newPost.id.toValue(),
       content: 'any_content',
     })
 
+    expect(result.isRight()).toBe(true)
     expect(inMemoryPostsRepository.items[0].content).toBe('any_content')
   })
 
@@ -35,14 +38,14 @@ describe('Edit Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(
-      async () =>
-        await sut.execute({
-          authorId: 'author_2',
-          postId: newPost.id.toValue(),
-          content: 'any_content',
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author_2',
+      postId: newPost.id.toValue(),
+      content: 'any_content',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 
   it('not should be possible edit a post doenst exist', async () => {
@@ -55,13 +58,13 @@ describe('Edit Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(
-      async () =>
-        await sut.execute({
-          authorId: 'author_1',
-          postId: 'post-2',
-          content: 'any_content',
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author_1',
+      postId: 'post-2',
+      content: 'any_content',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 })

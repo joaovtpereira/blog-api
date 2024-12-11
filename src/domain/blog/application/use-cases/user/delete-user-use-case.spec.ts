@@ -2,6 +2,7 @@ import { makeUser } from 'test/factories/make-user'
 import { DeleteUserUseCase } from './delete-user-use-case'
 import { InMemoryUserRepository } from 'test/repositories/in-memory-user-repository'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
+import { NotFoundError } from '../errors/not-found-error'
 
 let inMemoryUserRepository: InMemoryUserRepository
 let sut: DeleteUserUseCase
@@ -17,10 +18,11 @@ describe('Delete User', () => {
 
     await inMemoryUserRepository.create(newUser)
 
-    await sut.execute({
+    const result = await sut.execute({
       id: newUser.id.toValue(),
     })
 
+    expect(result.isRight()).toBe(true)
     expect(inMemoryUserRepository.items).toHaveLength(0)
   })
 
@@ -28,11 +30,11 @@ describe('Delete User', () => {
     const newUser = makeUser({}, new UniquieEntityId('user-1'))
 
     await inMemoryUserRepository.create(newUser)
+    const result = await sut.execute({
+      id: 'user-2',
+    })
 
-    expect(async () => {
-      await sut.execute({
-        id: 'user-2',
-      })
-    }).rejects.toBeInstanceOf(Error)
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 })

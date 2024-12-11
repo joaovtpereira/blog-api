@@ -1,11 +1,17 @@
+import { Either, left, right } from '@/core/either'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
+import { NotFoundError } from '../errors/not-found-error'
+import { NotAllowedError } from '../errors/not-allowed-error'
 
 interface DeletePostUseCaseRequest {
   authorId: string
   postId: string
 }
 
-interface DeletePostUseCaseResponse {}
+type DeletePostUseCaseResponse = Either<
+  NotFoundError | NotAllowedError,
+  NonNullable<unknown>
+>
 
 export class DeletePostUseCase {
   constructor(private postRepository: PostsRepository) {}
@@ -16,15 +22,15 @@ export class DeletePostUseCase {
     const post = await this.postRepository.findById(postId)
 
     if (!post) {
-      throw new Error('Post not found')
+      return left(new NotFoundError())
     }
 
     if (post.authorId.toValue() !== authorId) {
-      throw new Error('You are not the author of this post')
+      return left(new NotAllowedError())
     }
 
     await this.postRepository.delete(post)
 
-    return {}
+    return right({})
   }
 }

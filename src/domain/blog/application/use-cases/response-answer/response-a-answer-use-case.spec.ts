@@ -3,6 +3,7 @@ import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { ResponseAnswerUseCase } from './response-a-answer-use-case'
 import { InMemoryResponseAnswerRepository } from 'test/repositories/in-memory-response-answer-repository'
 import { makeAnswer } from 'test/factories/makeAnswer'
+import { NotFoundError } from '../errors/not-found-error'
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let inMemoryResponseAnswerRepository: InMemoryResponseAnswerRepository
@@ -23,14 +24,15 @@ describe('Response Answer', () => {
 
     await inMemoryAnswerRepository.create(newAnswer)
 
-    const responseAnswer = await sut.execute({
+    const result = await sut.execute({
       authorId: 'author-1',
       content: 'any String',
       answerId: newAnswer.id.toValue(),
     })
 
+    assert(result.isRight(), 'Result not success')
     expect(inMemoryResponseAnswerRepository.items[0].id).toEqual(
-      responseAnswer.id,
+      result.value.responseAnswer.id,
     )
     expect(inMemoryResponseAnswerRepository.items[0].content).toBe('any String')
   })
@@ -40,12 +42,13 @@ describe('Response Answer', () => {
 
     await inMemoryAnswerRepository.create(newAnswer)
 
-    expect(async () => {
-      await sut.execute({
-        authorId: 'author-1',
-        content: 'any String',
-        answerId: 'answer-2',
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author-1',
+      content: 'any String',
+      answerId: 'answer-2',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 })

@@ -1,12 +1,18 @@
+import { Either, left, right } from '@/core/either'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 import { UserFeedbackRepository } from '@/domain/blog/application/repositories/user-likes-repository'
+import { NotFoundError } from '../errors/not-found-error'
+import { NotDislikedPostError } from '../errors/not-disliked-post-error'
 
-interface RemoveDislikedPosttUseCaseRequest {
+interface RemoveDislikedPostUseCaseRequest {
   postId: string
   userId: string
 }
 
-interface RemoveDislikedPosttUseCaseResponse {}
+type RemoveDislikedPostUseCaseResponse = Either<
+  NotFoundError | NotDislikedPostError,
+  NonNullable<unknown>
+>
 
 export class RemoveDislikedPosttUseCase {
   constructor(
@@ -17,11 +23,11 @@ export class RemoveDislikedPosttUseCase {
   async execute({
     postId,
     userId,
-  }: RemoveDislikedPosttUseCaseRequest): Promise<RemoveDislikedPosttUseCaseResponse> {
+  }: RemoveDislikedPostUseCaseRequest): Promise<RemoveDislikedPostUseCaseResponse> {
     const post = await this.postRepository.findById(postId)
 
     if (!post) {
-      throw new Error('Post not found')
+      return left(new NotFoundError())
     }
 
     const userDislike = await this.userFeedbackRepository.findHaveDislikedAPost(
@@ -30,11 +36,11 @@ export class RemoveDislikedPosttUseCase {
     )
 
     if (!userDislike) {
-      throw new Error('You doent dislike this post')
+      return left(new NotDislikedPostError())
     }
 
     await this.userFeedbackRepository.delete(userDislike)
 
-    return {}
+    return right({})
   }
 }

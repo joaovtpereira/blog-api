@@ -1,22 +1,32 @@
+import { Either, left, right } from '@/core/either'
 import { UserRepository } from '@/domain/blog/application/repositories/user-repository'
+import { NotFoundError } from '../errors/not-found-error'
+import { User } from '@/domain/blog/enterprise/entities/user'
 
 interface DeleteUserUseCaseRequest {
   id: string
 }
 
+type DeleteUserUseCaseResponse = Either<
+  NotFoundError,
+  {
+    user: User
+  }
+>
+
 export class DeleteUserUseCase {
   constructor(private userRepository: UserRepository) {}
-  async execute(props: DeleteUserUseCaseRequest) {
+  async execute(
+    props: DeleteUserUseCaseRequest,
+  ): Promise<DeleteUserUseCaseResponse> {
     const user = await this.userRepository.findById(props.id)
 
-    console.log({ user })
-
     if (!user) {
-      throw new Error('User doenst exists')
+      return left(new NotFoundError())
     }
 
     await this.userRepository.delete(user)
 
-    return user
+    return right({ user })
   }
 }

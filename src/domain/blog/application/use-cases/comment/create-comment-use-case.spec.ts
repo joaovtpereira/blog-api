@@ -3,6 +3,7 @@ import { CreateCommentUseCase } from './create-comment-use-case'
 import { InMemoryCommentRepository } from 'test/repositories/in-memory-comment-repository'
 import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
+import { NotFoundError } from '@/domain/blog/application/use-cases/errors/not-found-error'
 
 let inMemoryCommentRepository: InMemoryCommentRepository
 let inMemoryPostsRepository: InMemoryPostsRepository
@@ -23,13 +24,16 @@ describe('Create Comment', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    const comment = await sut.execute({
+    const result = await sut.execute({
       authorId: 'João',
       content: 'any String',
       postId: newPost.id.toValue(),
     })
 
-    expect(inMemoryCommentRepository.items[0].id).toEqual(comment.id)
+    assert(result.isRight(), 'Result not success')
+    expect(inMemoryCommentRepository.items[0].id).toEqual(
+      result.value.comment.id,
+    )
     expect(inMemoryCommentRepository.items[0].content).toBe('any String')
   })
 
@@ -38,12 +42,13 @@ describe('Create Comment', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(async () => {
-      await sut.execute({
-        authorId: 'João',
-        content: 'any String',
-        postId: 'post-2',
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'João',
+      content: 'any String',
+      postId: 'post-2',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 })

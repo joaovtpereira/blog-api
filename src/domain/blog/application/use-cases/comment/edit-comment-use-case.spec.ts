@@ -4,6 +4,8 @@ import { InMemoryCommentRepository } from 'test/repositories/in-memory-comment-r
 import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { makeComment } from 'test/factories/make-comment'
+import { NotFoundError } from '../errors/not-found-error'
+import { NotAllowedError } from '../errors/not-allowed-error'
 
 let inMemoryCommentRepository: InMemoryCommentRepository
 let inMemoryPostsRepository: InMemoryPostsRepository
@@ -27,12 +29,13 @@ describe('Edit Comment', () => {
 
     await inMemoryCommentRepository.create(newComment)
 
-    await sut.execute({
+    const result = await sut.execute({
       authorId: 'author-1',
       content: 'any String',
       commentId: newComment.id.toValue(),
     })
 
+    assert(result.isRight(), 'Result not success')
     expect(inMemoryCommentRepository.items[0].id).toEqual(newComment.id)
     expect(inMemoryCommentRepository.items[0].content).toBe('any String')
   })
@@ -51,13 +54,14 @@ describe('Edit Comment', () => {
 
     await inMemoryCommentRepository.create(newComment)
 
-    expect(async () => {
-      await sut.execute({
-        authorId: 'author-1',
-        content: 'any String',
-        commentId: 'comment-2',
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author-1',
+      content: 'any String',
+      commentId: 'comment-2',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 
   it('not be should possible edit a comment from another user', async () => {
@@ -71,12 +75,13 @@ describe('Edit Comment', () => {
 
     await inMemoryCommentRepository.create(newComment)
 
-    expect(async () => {
-      await sut.execute({
-        authorId: 'author-2',
-        content: 'any String',
-        commentId: newComment.id.toValue(),
-      })
-    }).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      authorId: 'author-2',
+      content: 'any String',
+      commentId: newComment.id.toValue(),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

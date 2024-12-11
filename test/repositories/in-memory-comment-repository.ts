@@ -1,7 +1,16 @@
+import { PaginationParams } from '@/core/respositories/pagination-params'
 import { CommentRepository } from '@/domain/blog/application/repositories/comment-repository'
 import { Comment } from '@/domain/blog/enterprise/entities/comment'
 export class InMemoryCommentRepository implements CommentRepository {
   public items: Comment[] = []
+
+  async findManyByPostId(postId: string, { page }: PaginationParams) {
+    const comments = this.items
+      .filter((item) => item.postId.toValue() === postId)
+      .slice((page - 1) * 20, 20 * page)
+
+    return comments
+  }
 
   async findById(id: string) {
     const comment = this.items.find((item) => item.id.toValue() === id)

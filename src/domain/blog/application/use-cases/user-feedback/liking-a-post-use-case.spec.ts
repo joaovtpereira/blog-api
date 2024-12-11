@@ -3,6 +3,8 @@ import { LikingPostUseCase } from './liking-a-post-use-case'
 import { InMemoryPostsRepository } from 'test/repositories/in-memory-post-repository'
 import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
+import { NotFoundError } from '../errors/not-found-error'
+import { AlreadyLikePostError } from '../errors/already-like-post-error'
 
 let inMemoryUserFeedbackRepository: InMemoryUserFeedbackRepository
 let inMemoryPostsRepository: InMemoryPostsRepository
@@ -28,11 +30,12 @@ describe('UserLike Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    await sut.execute({
+    const result = await sut.execute({
       userId: 'author_1',
       postId: newPost.id.toValue(),
     })
 
+    expect(result.isRight()).toBe(true)
     expect(inMemoryUserFeedbackRepository.items[0].id).toBeInstanceOf(
       UniquieEntityId,
     )
@@ -48,13 +51,13 @@ describe('UserLike Post', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    expect(
-      async () =>
-        await sut.execute({
-          userId: 'author_1',
-          postId: 'invalid_id',
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'author_1',
+      postId: 'invalid_id',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 
   it('not be should possible like a post twice', async () => {
@@ -72,12 +75,11 @@ describe('UserLike Post', () => {
       postId: newPost.id.toValue(),
     })
 
-    expect(
-      async () =>
-        await sut.execute({
-          userId: 'author_1',
-          postId: newPost.id.toValue(),
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'author_1',
+      postId: newPost.id.toValue(),
+    })
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(AlreadyLikePostError)
   })
 })

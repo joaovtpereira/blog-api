@@ -3,6 +3,8 @@ import { InMemoryPostsRepository } from 'test/repositories/in-memory-post-reposi
 import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { DislikePosttUseCase } from './dislike-a-post-use-case'
+import { NotFoundError } from '../errors/not-found-error'
+import { AlreadyDislikePostError } from '../errors/already-dislike-post-error'
 
 let inMemoryUserFeedbackRepository: InMemoryUserFeedbackRepository
 let inMemoryPostsRepository: InMemoryPostsRepository
@@ -28,11 +30,12 @@ describe('Dislike a Post Use Case', () => {
 
     await inMemoryPostsRepository.create(newPost)
 
-    await sut.execute({
+    const result = await sut.execute({
       userId: 'author_1',
       postId: newPost.id.toValue(),
     })
 
+    expect(result.isRight()).toBe(true)
     expect(inMemoryUserFeedbackRepository.items[0].id).toBeInstanceOf(
       UniquieEntityId,
     )
@@ -48,14 +51,13 @@ describe('Dislike a Post Use Case', () => {
     )
 
     await inMemoryPostsRepository.create(newPost)
+    const result = await sut.execute({
+      userId: 'author_1',
+      postId: 'invalid_id',
+    })
 
-    expect(
-      async () =>
-        await sut.execute({
-          userId: 'author_1',
-          postId: 'invalid_id',
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotFoundError)
   })
 
   it('not be should possible dislike a post twice', async () => {
@@ -73,12 +75,12 @@ describe('Dislike a Post Use Case', () => {
       postId: newPost.id.toValue(),
     })
 
-    expect(
-      async () =>
-        await sut.execute({
-          userId: 'author_1',
-          postId: newPost.id.toValue(),
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    const result = await sut.execute({
+      userId: 'author_1',
+      postId: newPost.id.toValue(),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(AlreadyDislikePostError)
   })
 })

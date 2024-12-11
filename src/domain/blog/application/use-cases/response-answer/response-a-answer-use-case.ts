@@ -1,7 +1,9 @@
 import { ResponseAnswer } from '@/domain/blog/enterprise/entities/response-answer'
 import { ResponseAnswerRepository } from '@/domain/blog/application/repositories/response-answer-repository'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
-import { AnswerRepository } from '../../repositories/answer-repository'
+import { AnswerRepository } from '@/domain/blog/application/repositories/answer-repository'
+import { Either, left, right } from '@/core/either'
+import { NotFoundError } from '../errors/not-found-error'
 
 interface ResponseAnswerUseCaseRequest {
   content: string
@@ -9,17 +11,28 @@ interface ResponseAnswerUseCaseRequest {
   answerId: string
 }
 
+type ResponseAnswerUseCaseResponse = Either<
+  NotFoundError,
+  {
+    responseAnswer: ResponseAnswer
+  }
+>
+
 export class ResponseAnswerUseCase {
   constructor(
     private answerRepository: AnswerRepository,
     private responseAnswerRepository: ResponseAnswerRepository,
   ) {}
 
-  async execute({ content, authorId, answerId }: ResponseAnswerUseCaseRequest) {
+  async execute({
+    content,
+    authorId,
+    answerId,
+  }: ResponseAnswerUseCaseRequest): Promise<ResponseAnswerUseCaseResponse> {
     const answer = await this.answerRepository.findById(answerId)
 
     if (!answer) {
-      throw new Error('Answer not found')
+      return left(new NotFoundError())
     }
 
     const responseAnswer = ResponseAnswer.create({
@@ -30,6 +43,6 @@ export class ResponseAnswerUseCase {
 
     await this.responseAnswerRepository.create(responseAnswer)
 
-    return responseAnswer
+    return right({ responseAnswer })
   }
 }
