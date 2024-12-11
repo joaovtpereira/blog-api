@@ -1,28 +1,23 @@
-import { Optional } from '@/core/types/optional'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
-import { Response, ResponseProps } from './response'
+import { Entity } from '@/core/entities/entity'
 
-export interface AttachmentPostProps extends ResponseProps {
-  answerId: UniquieEntityId
+interface AttachmentPostProps {
+  postId: string
+  attachmentId: string
 }
 
-export class AttachmentPost extends Response<AttachmentPostProps> {
-  get answerId() {
-    return this.props.answerId
+export class AttachmentPost extends Entity<AttachmentPostProps> {
+  get postId() {
+    return this.props.postId
   }
 
-  static create(
-    props: Optional<AttachmentPostProps, 'createdAt'>,
-    id?: UniquieEntityId,
-  ) {
-    const answer = new AttachmentPost(
-      {
-        ...props,
-        createdAt: new Date(),
-      },
-      id,
-    )
+  get attachmentId() {
+    return this.props.attachmentId
+  }
 
-    return answer
+  static create(props: AttachmentPostProps, id?: UniquieEntityId) {
+    const attachmentPost = new AttachmentPost(props, id)
+
+    return attachmentPost
   }
 }
