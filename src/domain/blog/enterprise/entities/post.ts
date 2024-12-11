@@ -2,13 +2,14 @@ import { Slug } from './value-objects/slug'
 import { Optional } from '../../../../core/types/optional'
 import { UniquieEntityId } from '../../../../core/entities/uniquie-entity-id'
 import { AgregateRoot } from '@/core/entities/aggregate-root'
+import { AttachmentsPostList } from './attachments-post-list'
 
 export interface PostProps {
   title: string
   category: string
   authorId: UniquieEntityId
   content: string
-  attachments: string[]
+  attachments: AttachmentsPostList
   slug: Slug
   created_at: Date
   likes: number
@@ -64,7 +65,7 @@ export class Post extends AgregateRoot<PostProps> {
     this.props.dislikes = dislikes
   }
 
-  set attachments(attachments: string[]) {
+  set attachments(attachments: AttachmentsPostList) {
     this.props.attachments = attachments
   }
 
@@ -82,7 +83,7 @@ export class Post extends AgregateRoot<PostProps> {
         slug: props.slug ?? Slug.createSlugFromText(props.title),
         likes: 0,
         dislikes: 0,
-        attachments: props.attachments ?? [],
+        attachments: props.attachments ?? new AttachmentsPostList(),
       },
       id,
     )
