@@ -1,3 +1,4 @@
+import { DomainEvents } from '@/core/events/domain-events'
 import { PaginationParams } from '@/core/respositories/pagination-params'
 import { CommentRepository } from '@/domain/blog/application/repositories/comment-repository'
 import { Comment } from '@/domain/blog/enterprise/entities/comment'
@@ -24,6 +25,8 @@ export class InMemoryCommentRepository implements CommentRepository {
 
   async create(comment: Comment) {
     this.items.push(comment)
+
+    DomainEvents.dispatchEventsForAggregate(comment.id)
     return comment
   }
 

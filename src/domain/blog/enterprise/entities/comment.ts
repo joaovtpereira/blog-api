@@ -1,6 +1,7 @@
-import { Entity } from '../../../../core/entities/entity'
 import { Optional } from '../../../../core/types/optional'
 import { UniquieEntityId } from '../../../../core/entities/uniquie-entity-id'
+import { AgregateRoot } from '@/core/entities/aggregate-root'
+import { OnCommentCreatedEvent } from '../../application/events/on-comment-post-event'
 
 export interface CommentProps {
   content: string
@@ -9,7 +10,7 @@ export interface CommentProps {
   created_at: Date
 }
 
-export class Comment extends Entity<CommentProps> {
+export class Comment extends AgregateRoot<CommentProps> {
   get postId() {
     return this.props.postId
   }
@@ -34,7 +35,7 @@ export class Comment extends Entity<CommentProps> {
     props: Optional<CommentProps, 'created_at'>,
     id?: UniquieEntityId,
   ) {
-    const answer = new Comment(
+    const coment = new Comment(
       {
         ...props,
         created_at: new Date(),
@@ -42,6 +43,12 @@ export class Comment extends Entity<CommentProps> {
       id,
     )
 
-    return answer
+    const isNewComent = !id
+
+    if (isNewComent) {
+      coment.addDomainEvent(new OnCommentCreatedEvent(coment))
+    }
+
+    return coment
   }
 }
