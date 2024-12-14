@@ -1,4 +1,4 @@
-import { UseCaseError } from '@/core/errors/use-case-errors'
+import { UseCaseError } from '@/core/errors/type/use-case-errors'
 
 export class AlreadyDislikePostError extends Error implements UseCaseError {
   constructor() {
