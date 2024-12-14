@@ -6,8 +6,8 @@ import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { InMemoryCommentRepository } from 'test/repositories/in-memory-comment-repository'
 import { makeComment } from 'test/factories/make-comment'
 import { makeAnswer } from 'test/factories/makeAnswer'
-import { NotFoundError } from '../errors/not-found-error'
-import { NotAllowedError } from '../errors/not-allowed-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
+import { NotAllowedError } from '../../../../../core/errors/not-allowed-error'
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let inMemoryPostsRepository: InMemoryPostsRepository

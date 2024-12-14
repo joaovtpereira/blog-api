@@ -3,7 +3,7 @@ import { AnswerRepository } from '@/domain/blog/application/repositories/answer-
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { CommentRepository } from '../../repositories/comment-repository'
 import { Either, left, right } from '@/core/either'
-import { NotFoundError } from '../errors/not-found-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
 
 interface CreateAnswerUseCaseRequest {
   content: string

@@ -5,7 +5,7 @@ import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { InMemoryCommentRepository } from 'test/repositories/in-memory-comment-repository'
 import { makeComment } from 'test/factories/make-comment'
-import { NotFoundError } from '../errors/not-found-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let inMemoryPostsRepository: InMemoryPostsRepository

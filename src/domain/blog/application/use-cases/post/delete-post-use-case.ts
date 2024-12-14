@@ -1,7 +1,7 @@
 import { Either, left, right } from '@/core/either'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
-import { NotFoundError } from '../errors/not-found-error'
-import { NotAllowedError } from '../errors/not-allowed-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
+import { NotAllowedError } from '../../../../../core/errors/not-allowed-error'
 
 interface DeletePostUseCaseRequest {
   authorId: string

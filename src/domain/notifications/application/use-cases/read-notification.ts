@@ -1,7 +1,7 @@
 import { NotificationRepository } from '@/domain/notifications/application/repositories/notification-repository'
 import { Either, left, right } from '@/core/either'
-import { NotFoundError } from '@/domain/blog/application/use-cases/errors/not-found-error'
-import { NotAllowedError } from '@/domain/blog/application/use-cases/errors/not-allowed-error'
+import { NotFoundError } from '@/core/errors/not-found-error'
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
 interface ReadNotificationUseCaseRequest {
   notificationId: string
   recipientId: string

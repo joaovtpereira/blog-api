@@ -2,7 +2,7 @@ import { makeUser } from 'test/factories/make-user'
 import { DeleteUserUseCase } from './delete-user-use-case'
 import { InMemoryUserRepository } from 'test/repositories/in-memory-user-repository'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
-import { NotFoundError } from '../errors/not-found-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
 
 let inMemoryUserRepository: InMemoryUserRepository
 let sut: DeleteUserUseCase

@@ -2,7 +2,7 @@ import { CommentRepository } from '@/domain/blog/application/repositories/commen
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { Either, left, right } from '@/core/either'
-import { NotFoundError } from '../errors/not-found-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
 import { Comment } from '@/domain/blog/enterprise/entities/comment'
 
 interface CreateCommentUseCaseRequest {

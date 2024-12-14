@@ -1,6 +1,6 @@
 import { Either, left, right } from '@/core/either'
 import { UserRepository } from '@/domain/blog/application/repositories/user-repository'
-import { NotFoundError } from '../errors/not-found-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
 import { User } from '@/domain/blog/enterprise/entities/user'
 
 interface DeleteUserUseCaseRequest {

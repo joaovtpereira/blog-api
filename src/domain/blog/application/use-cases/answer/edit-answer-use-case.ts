@@ -1,6 +1,6 @@
 import { AnswerRepository } from '@/domain/blog/application/repositories/answer-repository'
-import { NotAllowedError } from '../errors/not-allowed-error'
-import { NotFoundError } from '../errors/not-found-error'
+import { NotAllowedError } from '../../../../../core/errors/not-allowed-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
 import { Either, left, right } from '@/core/either'
 import { Answer } from '@/domain/blog/enterprise/entities/answer'
 

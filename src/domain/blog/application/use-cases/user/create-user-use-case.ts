@@ -1,7 +1,7 @@
 import { User } from '@/domain/blog/enterprise/entities/user'
 import { UserRepository } from '@/domain/blog/application/repositories/user-repository'
 import { Either, left, right } from '@/core/either'
-import { UserWithSameEmail } from '../errors/user-with-same-email-error'
+import { UserWithSameEmail } from '../../../../../core/errors/user-with-same-email-error'
 
 interface CreateUserUseCaseRequest {
   name: string

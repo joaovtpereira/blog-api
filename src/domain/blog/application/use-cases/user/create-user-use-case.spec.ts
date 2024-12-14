@@ -1,4 +1,4 @@
-import { UserWithSameEmail } from '../errors/user-with-same-email-error'
+import { UserWithSameEmail } from '../../../../../core/errors/user-with-same-email-error'
 import { CreateUserUseCase } from './create-user-use-case'
 import { InMemoryUserRepository } from 'test/repositories/in-memory-user-repository'
 

@@ -2,8 +2,8 @@ import { makeNotification } from 'test/factories/make-notification'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { InMemoryNotificationRepository } from 'test/repositories/in-memory-notification-repository'
 import { ReadNotificationUseCase } from './read-notification'
-import { NotAllowedError } from '@/domain/blog/application/use-cases/errors/not-allowed-error'
-import { NotFoundError } from '@/domain/blog/application/use-cases/errors/not-found-error'
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
+import { NotFoundError } from '@/core/errors/not-found-error'
 
 let inMemoryNotificationsRepository: InMemoryNotificationRepository
 let sut: ReadNotificationUseCase

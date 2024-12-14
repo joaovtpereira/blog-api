@@ -4,8 +4,8 @@ import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { RemoveDislikedPosttUseCase } from './remove-dislike-a-post-use-case'
 import { DislikePosttUseCase } from './dislike-a-post-use-case'
-import { NotFoundError } from '../errors/not-found-error'
-import { NotDislikedPostError } from '../errors/not-disliked-post-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
+import { NotDislikedPostError } from '../../../../../core/errors/not-disliked-post-error'
 
 let inMemoryUserFeedbackRepository: InMemoryUserFeedbackRepository
 let inMemoryPostsRepository: InMemoryPostsRepository

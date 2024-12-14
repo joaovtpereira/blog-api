@@ -3,7 +3,7 @@ import { CreateCommentUseCase } from './create-comment-use-case'
 import { InMemoryCommentRepository } from 'test/repositories/in-memory-comment-repository'
 import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
-import { NotFoundError } from '@/domain/blog/application/use-cases/errors/not-found-error'
+import { NotFoundError } from '@/core/errors/not-found-error'
 
 let inMemoryCommentRepository: InMemoryCommentRepository
 let inMemoryPostsRepository: InMemoryPostsRepository

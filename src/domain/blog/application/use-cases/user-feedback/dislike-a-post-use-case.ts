@@ -3,8 +3,8 @@ import { UserFeedback } from '@/domain/blog/enterprise/entities/user-feedback'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 import { UserFeedbackRepository } from '@/domain/blog/application/repositories/user-likes-repository'
 import { Either, left, right } from '@/core/either'
-import { NotFoundError } from '../errors/not-found-error'
-import { AlreadyDislikePostError } from '../errors/already-dislike-post-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
+import { AlreadyDislikePostError } from '../../../../../core/errors/already-dislike-post-error'
 
 interface DislikePosttUseCaseRequest {
   postId: string

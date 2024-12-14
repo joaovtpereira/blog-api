@@ -1,8 +1,8 @@
 import { Either, left, right } from '@/core/either'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 import { UserFeedbackRepository } from '@/domain/blog/application/repositories/user-likes-repository'
-import { NotFoundError } from '../errors/not-found-error'
-import { NotDislikedPostError } from '../errors/not-disliked-post-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
+import { NotDislikedPostError } from '../../../../../core/errors/not-disliked-post-error'
 
 interface RemoveDislikedPostUseCaseRequest {
   postId: string

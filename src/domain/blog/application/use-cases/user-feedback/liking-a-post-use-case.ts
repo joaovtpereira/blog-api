@@ -3,8 +3,8 @@ import { UserFeedback } from '@/domain/blog/enterprise/entities/user-feedback'
 import { PostsRepository } from '@/domain/blog/application/repositories/post-repository'
 import { UserFeedbackRepository } from '@/domain/blog/application/repositories/user-likes-repository'
 import { Either, left, right } from '@/core/either'
-import { NotFoundError } from '../errors/not-found-error'
-import { AlreadyLikePostError } from '../errors/already-like-post-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
+import { AlreadyLikePostError } from '../../../../../core/errors/already-like-post-error'
 
 interface LikingPostUseCaseRequest {
   postId: string

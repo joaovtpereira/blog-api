@@ -3,7 +3,7 @@ import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { ResponseAnswerUseCase } from './response-a-answer-use-case'
 import { InMemoryResponseAnswerRepository } from 'test/repositories/in-memory-response-answer-repository'
 import { makeAnswer } from 'test/factories/makeAnswer'
-import { NotFoundError } from '../errors/not-found-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let inMemoryResponseAnswerRepository: InMemoryResponseAnswerRepository

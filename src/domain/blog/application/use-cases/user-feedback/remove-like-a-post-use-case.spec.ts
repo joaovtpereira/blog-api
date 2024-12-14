@@ -4,8 +4,8 @@ import { InMemoryPostsRepository } from 'test/repositories/in-memory-post-reposi
 import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
 import { RemoveLikePosttUseCase } from './remove-like-a-post-use-case'
-import { NotFoundError } from '../errors/not-found-error'
-import { NotLikedPostError } from '../errors/not-liked-post-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
+import { NotLikedPostError } from '../../../../../core/errors/not-liked-post-error'
 
 let inMemoryUserFeedbackRepository: InMemoryUserFeedbackRepository
 let inMemoryPostsRepository: InMemoryPostsRepository

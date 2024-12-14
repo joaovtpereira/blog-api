@@ -3,8 +3,8 @@ import { LikingPostUseCase } from './liking-a-post-use-case'
 import { InMemoryPostsRepository } from 'test/repositories/in-memory-post-repository'
 import { makePost } from 'test/factories/make-post'
 import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
-import { NotFoundError } from '../errors/not-found-error'
-import { AlreadyLikePostError } from '../errors/already-like-post-error'
+import { NotFoundError } from '../../../../../core/errors/not-found-error'
+import { AlreadyLikePostError } from '../../../../../core/errors/already-like-post-error'
 
 let inMemoryUserFeedbackRepository: InMemoryUserFeedbackRepository
 let inMemoryPostsRepository: InMemoryPostsRepository
