@@ -1,10 +1,5 @@
 import { InMemoryNotificationRepository } from 'test/repositories/in-memory-notification-repository'
-import { makePost } from 'test/factories/make-post'
-import { UniquieEntityId } from '@/core/entities/uniquie-entity-id'
-import { makeComment } from 'test/factories/make-comment'
-import { NotFoundError } from '@/domain/blog/application/use-cases/errors/not-found-error'
 import { CreateNotificationUseCase } from './send-notitication'
-import { makeNotification } from 'test/factories/make-notification'
 
 let inMemoryNotificationRepository: InMemoryNotificationRepository
 
