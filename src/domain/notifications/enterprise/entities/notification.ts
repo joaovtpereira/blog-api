@@ -5,8 +5,8 @@ import { Optional } from '@/core/types/optional'
 export interface NotificationProps {
   content: string
   title: string
-  recipientId: string
-  createdAt: Date
+  recipientId: UniquieEntityId
+  createdAt?: Date
   readAt?: Date
 }
 
